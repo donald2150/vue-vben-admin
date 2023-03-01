@@ -7,7 +7,7 @@ import type { TableActionType } from '/@/components/Table/src/types/table';
 import type { CSSProperties } from 'vue';
 import type { RowProps } from 'ant-design-vue/lib/grid/Row';
 
-export type FieldMapToTime = [string, [string, string], string?][];
+export type FieldMapToTime = [string, [string, string], (string | [string, string])?][];
 
 export type Rule = RuleObject & {
   trigger?: 'blur' | 'change' | ['change', 'blur'];
@@ -33,11 +33,11 @@ export interface FormActionType {
   updateSchema: (data: Partial<FormSchema> | Partial<FormSchema>[]) => Promise<void>;
   resetSchema: (data: Partial<FormSchema> | Partial<FormSchema>[]) => Promise<void>;
   setProps: (formProps: Partial<FormProps>) => Promise<void>;
-  removeSchemaByFiled: (field: string | string[]) => Promise<void>;
+  removeSchemaByField: (field: string | string[]) => Promise<void>;
   appendSchemaByField: (
-    schema: FormSchema,
+    schema: FormSchema | FormSchema[],
     prefixField: string | undefined,
-    first?: boolean | undefined
+    first?: boolean | undefined,
   ) => Promise<void>;
   validateFields: (nameList?: NamePath[]) => Promise<any>;
   validate: (nameList?: NamePath[]) => Promise<any>;
@@ -49,17 +49,20 @@ export type RegisterFn = (formInstance: FormActionType) => void;
 export type UseFormReturnType = [RegisterFn, FormActionType];
 
 export interface FormProps {
+  name?: string;
   layout?: 'vertical' | 'inline' | 'horizontal';
   // Form value
   model?: Recordable;
   // The width of all items in the entire form
   labelWidth?: number | string;
-  //alignment
+  // alignment
   labelAlign?: 'left' | 'right';
-  //Row configuration for the entire form
+  // Row configuration for the entire form
   rowProps?: RowProps;
   // Submit form on reset
   submitOnReset?: boolean;
+  // Submit form on form changing
+  submitOnChange?: boolean;
   // Col configuration for the entire form
   labelCol?: Partial<ColEx>;
   // Col configuration for the entire form
@@ -97,6 +100,8 @@ export interface FormProps {
   autoFocusFirstItem?: boolean;
   // Automatically collapse over the specified number of rows
   autoAdvancedLine?: number;
+  // Always show lines
+  alwaysShowLines?: number;
   // Whether to show the operation button
   showActionButtonGroup?: boolean;
 
@@ -127,7 +132,7 @@ export interface FormSchema {
   // Variable name bound to v-model Default value
   valueField?: string;
   // Label name
-  label: string;
+  label: string | VNode;
   // Auxiliary text
   subLabel?: string;
   // Help text on the right side of the text
@@ -170,6 +175,10 @@ export interface FormSchema {
 
   // 默认值
   defaultValue?: any;
+
+  // 是否自动处理与时间相关组件的默认值
+  isHandleDateDefaultValue?: boolean;
+
   isAdvanced?: boolean;
 
   // Matching details components

@@ -84,12 +84,15 @@ export function isElement(val: unknown): val is Element {
   return isObject(val) && !!val.tagName;
 }
 
+export function isMap(val: unknown): val is Map<any, any> {
+  return is(val, 'Map');
+}
+
 export const isServer = typeof window === 'undefined';
 
 export const isClient = !isServer;
 
 export function isUrl(path: string): boolean {
-  const reg =
-    /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
+  const reg = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
   return reg.test(path);
 }

@@ -2,6 +2,7 @@
   <div ref="wrapRef"></div>
 </template>
 <script lang="ts">
+  import type { Ref } from 'vue';
   import {
     defineComponent,
     ref,
@@ -18,6 +19,7 @@
   import { useModalContext } from '../../Modal';
   import { useRootSetting } from '/@/hooks/setting/useRootSetting';
   import { onMountedOrActivated } from '/@/hooks/core/onMountedOrActivated';
+  import { getTheme } from './getTheme';
 
   type Lang = 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' | undefined;
 
@@ -30,14 +32,14 @@
     emits: ['change', 'get', 'update:value'],
     setup(props, { attrs, emit }) {
       const wrapRef = ref<ElRef>(null);
-      const vditorRef = ref<Nullable<Vditor>>(null);
+      const vditorRef = ref(null) as Ref<Nullable<Vditor>>;
       const initedRef = ref(false);
 
       const modalFn = useModalContext();
 
       const { getLocale } = useLocale();
       const { getDarkMode } = useRootSetting();
-      const valueRef = ref('');
+      const valueRef = ref(props.value || '');
 
       watch(
         [() => getDarkMode.value, () => initedRef.value],
@@ -45,13 +47,14 @@
           if (!inited) {
             return;
           }
-          const theme = val === 'dark' ? 'dark' : 'classic';
-          instance.getVditor()?.setTheme(theme);
+          instance
+            .getVditor()
+            ?.setTheme(getTheme(val) as any, getTheme(val, 'content'), getTheme(val, 'code'));
         },
         {
           immediate: true,
           flush: 'post',
-        }
+        },
       );
 
       watch(
@@ -61,7 +64,7 @@
             instance.getVditor()?.setValue(v);
           }
           valueRef.value = v;
-        }
+        },
       );
 
       const getCurrentLang = computed((): 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' => {
@@ -86,10 +89,22 @@
         if (!wrapEl) return;
         const bindValue = { ...attrs, ...props };
         const insEditor = new Vditor(wrapEl, {
-          theme: getDarkMode.value === 'dark' ? 'dark' : 'classic',
+          // 设置外观主题
+          theme: getTheme(getDarkMode.value) as any,
           lang: unref(getCurrentLang),
           mode: 'sv',
+          fullscreen: {
+            index: 520,
+          },
           preview: {
+            theme: {
+              // 设置内容主题
+              current: getTheme(getDarkMode.value, 'content'),
+            },
+            hljs: {
+              // 设置代码块主题
+              style: getTheme(getDarkMode.value, 'code'),
+            },
             actions: [],
           },
           input: (v) => {

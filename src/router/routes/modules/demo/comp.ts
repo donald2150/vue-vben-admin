@@ -98,6 +98,14 @@ const comp: AppRouteModule = {
             title: t('routes.demo.form.appendForm'),
           },
         },
+        {
+          path: 'tabsForm',
+          name: 'tabsFormDemo',
+          component: () => import('/@/views/demo/form/TabsForm.vue'),
+          meta: {
+            title: t('routes.demo.form.tabsForm'),
+          },
+        },
       ],
     },
     {
@@ -237,6 +245,22 @@ const comp: AppRouteModule = {
           component: () => import('/@/views/demo/table/AuthColumn.vue'),
           meta: {
             title: t('routes.demo.table.authColumn'),
+          },
+        },
+        {
+          path: 'resizeParentHeightTable',
+          name: 'ResizeParentHeightTable',
+          component: () => import('/@/views/demo/table/ResizeParentHeightTable.vue'),
+          meta: {
+            title: t('routes.demo.table.resizeParentHeightTable'),
+          },
+        },
+        {
+          path: 'vxeTable',
+          name: 'VxeTableDemo',
+          component: () => import('/@/views/demo/table/VxeTable.vue'),
+          meta: {
+            title: t('routes.demo.table.vxeTable'),
           },
         },
       ],
@@ -532,6 +556,14 @@ const comp: AppRouteModule = {
       component: () => import('/@/views/demo/comp/loading/index.vue'),
       meta: {
         title: t('routes.demo.comp.loading'),
+      },
+    },
+    {
+      path: 'cardList',
+      name: 'CardListDemo',
+      component: () => import('/@/views/demo/comp/card-list/index.vue'),
+      meta: {
+        title: t('routes.demo.comp.cardList'),
       },
     },
   ],

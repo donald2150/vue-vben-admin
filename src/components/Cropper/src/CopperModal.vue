@@ -122,21 +122,24 @@
   import { isFunction } from '/@/utils/is';
   import { useI18n } from '/@/hooks/web/useI18n';
 
+  type apiFunParams = { file: Blob; name: string; filename: string };
+
   const props = {
     circled: { type: Boolean, default: true },
     uploadApi: {
-      type: Function as PropType<({ file: Blob, name: string, filename: string }) => Promise<any>>,
+      type: Function as PropType<(params: apiFunParams) => Promise<any>>,
     },
+    src: { type: String },
   };
 
   export default defineComponent({
-    name: 'CropperAvatar',
+    name: 'CropperModal',
     components: { BasicModal, Space, CropperImage, Upload, Avatar, Tooltip },
     props,
     emits: ['uploadSuccess', 'register'],
     setup(props, { emit }) {
       let filename = '';
-      const src = ref('');
+      const src = ref(props.src || '');
       const previewSource = ref('');
       const cropper = ref<Cropper>();
       let scaleX = 1;
@@ -184,7 +187,7 @@
           try {
             setModalProps({ confirmLoading: true });
             const result = await uploadApi({ name: 'file', file: blob, filename });
-            emit('uploadSuccess', { source: previewSource.value, data: result.data });
+            emit('uploadSuccess', { source: previewSource.value, data: result.url });
             closeModal();
           } finally {
             setModalProps({ confirmLoading: false });
@@ -232,17 +235,17 @@
       background: #eee;
       background-image: linear-gradient(
           45deg,
-          rgba(0, 0, 0, 0.25) 25%,
+          rgb(0 0 0 / 25%) 25%,
           transparent 0,
           transparent 75%,
-          rgba(0, 0, 0, 0.25) 0
+          rgb(0 0 0 / 25%) 0
         ),
         linear-gradient(
           45deg,
-          rgba(0, 0, 0, 0.25) 25%,
+          rgb(0 0 0 / 25%) 25%,
           transparent 0,
           transparent 75%,
-          rgba(0, 0, 0, 0.25) 0
+          rgb(0 0 0 / 25%) 0
         );
       background-position: 0 0, 12px 12px;
       background-size: 24px 24px;

@@ -27,12 +27,20 @@ export const basicProps = {
   },
   uploadParams: {
     type: Object as PropType<any>,
-    default: {},
+    default: () => ({}),
   },
   api: {
     type: Function as PropType<PromiseFn>,
     default: null,
     required: true,
+  },
+  name: {
+    type: String as PropType<string>,
+    default: 'file',
+  },
+  filename: {
+    type: String as PropType<string>,
+    default: null,
   },
 };
 
@@ -61,7 +69,7 @@ export const previewProps = {
 
 export const fileListProps = {
   columns: {
-    type: [Array] as PropType<FileBasicColumn[]>,
+    type: Array as PropType<FileBasicColumn[]>,
     default: null,
   },
   actionColumn: {

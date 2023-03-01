@@ -12,7 +12,7 @@ function getRandomPics(count = 10): string[] {
 
 const demoList = (() => {
   const result: any[] = [];
-  for (let index = 0; index < 60; index++) {
+  for (let index = 0; index < 200; index++) {
     result.push({
       id: `${index}`,
       beginTime: '@datetime',
@@ -27,6 +27,9 @@ const demoList = (() => {
       name6: '@cname()',
       name7: '@cname()',
       name8: '@cname()',
+      radio1: `选项${index + 1}`,
+      radio2: `选项${index + 1}`,
+      radio3: `选项${index + 1}`,
       avatar: Random.image('400x400', Random.color(), Random.color(), Random.first()),
       imgArr: getRandomPics(Math.ceil(Math.random() * 3) + 1),
       imgs: getRandomPics(Math.ceil(Math.random() * 3) + 1),

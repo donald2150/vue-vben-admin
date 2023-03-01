@@ -15,7 +15,7 @@ interface Options {
 function getKey(
   record: Recordable,
   rowKey: string | ((record: Record<string, any>) => string) | undefined,
-  autoCreateKey?: boolean
+  autoCreateKey?: boolean,
 ) {
   if (!rowKey || autoCreateKey) {
     return record[ROW_KEY];
@@ -31,7 +31,7 @@ function getKey(
 
 export function useCustomRow(
   propsRef: ComputedRef<BasicTableProps>,
-  { setSelectedRowKeys, getSelectRowKeys, getAutoCreateKey, clearSelectedRowKeys, emit }: Options
+  { setSelectedRowKeys, getSelectRowKeys, getAutoCreateKey, clearSelectedRowKeys, emit }: Options,
 ) {
   const customRow = (record: Recordable, index: number) => {
     return {
@@ -40,12 +40,20 @@ export function useCustomRow(
         function handleClick() {
           const { rowSelection, rowKey, clickToRowSelect } = unref(propsRef);
           if (!rowSelection || !clickToRowSelect) return;
-          const keys = getSelectRowKeys();
+          const keys = getSelectRowKeys() || [];
           const key = getKey(record, rowKey, unref(getAutoCreateKey));
           if (!key) return;
 
           const isCheckbox = rowSelection.type === 'checkbox';
           if (isCheckbox) {
+            // 找到tr
+            const tr: HTMLElement = (e as MouseEvent)
+              .composedPath?.()
+              .find((dom: HTMLElement) => dom.tagName === 'TR') as HTMLElement;
+            if (!tr) return;
+            // 找到Checkbox，检查是否为disabled
+            const checkBox = tr.querySelector('input[type=checkbox]');
+            if (!checkBox || checkBox.hasAttribute('disabled')) return;
             if (!keys.includes(key)) {
               setSelectedRowKeys([...keys, key]);
               return;

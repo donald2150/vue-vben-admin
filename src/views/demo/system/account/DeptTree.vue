@@ -1,12 +1,13 @@
 <template>
-  <div class="bg-white m-4 mr-0 overflow-hidden">
+  <div class="m-4 mr-0 overflow-hidden bg-white">
     <BasicTree
       title="部门列表"
       toolbar
       search
+      treeWrapperClassName="h-[calc(100%-35px)] overflow-auto"
       :clickRowToExpand="false"
       :treeData="treeData"
-      :replaceFields="{ key: 'id', title: 'deptName' }"
+      :fieldNames="{ key: 'id', title: 'deptName' }"
       @select="handleSelect"
     />
   </div>
@@ -29,9 +30,8 @@
         treeData.value = (await getDeptList()) as unknown as TreeItem[];
       }
 
-      function handleSelect(keys: string, e) {
+      function handleSelect(keys) {
         emit('select', keys[0]);
-        console.log(keys, e);
       }
 
       onMounted(() => {

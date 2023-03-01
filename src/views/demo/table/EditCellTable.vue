@@ -4,16 +4,19 @@
       @register="registerTable"
       @edit-end="handleEditEnd"
       @edit-cancel="handleEditCancel"
+      :beforeEditSubmit="beforeEditSubmit"
     />
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, h } from 'vue';
   import { BasicTable, useTable, BasicColumn } from '/@/components/Table';
   import { optionsListApi } from '/@/api/demo/select';
 
   import { demoListApi } from '/@/api/demo/table';
   import { treeOptionsListApi } from '/@/api/demo/tree';
+  import { useMessage } from '/@/hooks/web/useMessage';
+  import { Progress } from 'ant-design-vue';
   const columns: BasicColumn[] = [
     {
       title: '输入框',
@@ -58,6 +61,15 @@
       editRule: true,
       editComponent: 'InputNumber',
       width: 200,
+      editComponentProps: () => {
+        return {
+          max: 100,
+          min: 0,
+        };
+      },
+      editRender: ({ text }) => {
+        return h(Progress, { percent: Number(text) });
+      },
     },
     {
       title: '下拉框',
@@ -93,7 +105,7 @@
     },
     {
       title: '远程下拉树',
-      dataIndex: 'name7',
+      dataIndex: 'name8',
       edit: true,
       editComponent: 'ApiTreeSelect',
       editRule: false,
@@ -145,6 +157,57 @@
       },
       width: 200,
     },
+    {
+      title: '单选框',
+      dataIndex: 'radio1',
+      edit: true,
+      editComponent: 'RadioGroup',
+      editComponentProps: {
+        options: [
+          {
+            label: '选项1',
+            value: '1',
+          },
+          {
+            label: '选项2',
+            value: '2',
+          },
+        ],
+      },
+      width: 200,
+    },
+    {
+      title: '单选按钮框',
+      dataIndex: 'radio2',
+      edit: true,
+      editComponent: 'RadioButtonGroup',
+      editComponentProps: {
+        options: [
+          {
+            label: '选项1',
+            value: '1',
+          },
+          {
+            label: '选项2',
+            value: '2',
+          },
+        ],
+      },
+      width: 200,
+    },
+    {
+      title: '远程单选框',
+      dataIndex: 'radio3',
+      edit: true,
+      editComponent: 'ApiRadioGroup',
+      editComponentProps: {
+        api: optionsListApi,
+        resultField: 'list',
+        labelField: 'name',
+        valueField: 'id',
+      },
+      width: 200,
+    },
   ];
   export default defineComponent({
     components: { BasicTable },
@@ -157,8 +220,44 @@
         bordered: true,
       });
 
+      const { createMessage } = useMessage();
+
       function handleEditEnd({ record, index, key, value }: Recordable) {
         console.log(record, index, key, value);
+        return false;
+      }
+
+      // 模拟将指定数据保存
+      function feakSave({ value, key, id }) {
+        createMessage.loading({
+          content: `正在模拟保存${key}`,
+          key: '_save_fake_data',
+          duration: 0,
+        });
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            if (value === '') {
+              createMessage.error({
+                content: '保存失败：不能为空',
+                key: '_save_fake_data',
+                duration: 2,
+              });
+              resolve(false);
+            } else {
+              createMessage.success({
+                content: `记录${id}的${key}已保存`,
+                key: '_save_fake_data',
+                duration: 2,
+              });
+              resolve(true);
+            }
+          }, 2000);
+        });
+      }
+
+      async function beforeEditSubmit({ record, index, key, value }) {
+        console.log('单元格数据正在准备提交', { record, index, key, value });
+        return await feakSave({ id: record.id, key, value });
       }
 
       function handleEditCancel() {
@@ -169,6 +268,7 @@
         registerTable,
         handleEditEnd,
         handleEditCancel,
+        beforeEditSubmit,
       };
     },
   });

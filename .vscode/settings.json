@@ -1,23 +1,10 @@
 {
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
   "volar.tsPlugin": true,
   "volar.tsPluginStatus": false,
-  //===========================================
-  //============= Editor ======================
-  //===========================================
-  "explorer.openEditors.visible": 0,
+  "npm.packageManager": "pnpm",
   "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "diffEditor.ignoreTrimWhitespace": false,
-  //===========================================
-  //============= Other =======================
-  //===========================================
-  "breadcrumbs.enabled": true,
-  "open-in-browser.default": "chrome",
-  //===========================================
-  //============= files =======================
-  //===========================================
   "files.eol": "\n",
   "search.exclude": {
     "**/node_modules": true,
@@ -68,16 +55,10 @@
     "**/yarn.lock": true
   },
   "stylelint.enable": true,
-  "stylelint.packageManager": "yarn",
-  "liveServer.settings.donotShowInfoMsg": true,
-  "telemetry.enableCrashReporter": false,
-  "workbench.settings.enableNaturalLanguageSearch": false,
+  "stylelint.validate": ["css", "less", "postcss", "scss", "vue", "sass"],
   "path-intellisense.mappings": {
     "/@/": "${workspaceRoot}/src"
   },
-  "prettier.requireConfig": true,
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "workbench.sideBar.location": "left",
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -107,7 +88,8 @@
   },
   "[vue]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": false
+      "source.fixAll.eslint": true,
+      "source.fixAll.stylelint": true
     }
   },
   "i18n-ally.localesPaths": ["src/locales/lang"],
@@ -117,6 +99,7 @@
   "i18n-ally.pathMatcher": "{locale}/{namespaces}.{ext}",
   "i18n-ally.enabledParsers": ["ts"],
   "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.displayLanguage": "zh-CN",
   "i18n-ally.enabledFrameworks": ["vue", "react"],
   "cSpell.words": [
     "vben",
@@ -147,6 +130,31 @@
     "vueuse",
     "zxcvbn",
     "lintstagedrc",
-    "brotli"
+    "brotli",
+    "tailwindcss",
+    "sider",
+    "pnpm",
+    "antd"
+  ],
+  "vetur.format.scriptInitialIndent": true,
+  "vetur.format.styleInitialIndent": true,
+  "vetur.validation.script": false,
+  "MicroPython.executeButton": [
+    {
+      "text": "▶",
+      "tooltip": "运行",
+      "alignment": "left",
+      "command": "extension.executeFile",
+      "priority": 3.5
+    }
+  ],
+  "MicroPython.syncButton": [
+    {
+      "text": "$(sync)",
+      "tooltip": "同步",
+      "alignment": "left",
+      "command": "extension.execute",
+      "priority": 4
+    }
   ]
 }

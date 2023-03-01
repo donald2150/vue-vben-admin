@@ -6,7 +6,7 @@
       </a-col>
       <a-col :span="10">
         <div class="change-avatar">
-          <div class="mb-2"> 头像 </div>
+          <div class="mb-2">头像</div>
           <CropperAvatar
             :uploadApi="uploadApi"
             :value="avatar"
@@ -62,19 +62,21 @@
 
       const avatar = computed(() => {
         const { avatar } = userStore.getUserInfo;
+        console.log(avatar);
         return avatar || headerImg;
       });
 
-      function updateAvatar(src: string) {
+      function updateAvatar({ src, data }) {
         const userinfo = userStore.getUserInfo;
         userinfo.avatar = src;
         userStore.setUserInfo(userinfo);
+        console.log('data', data);
       }
 
       return {
         avatar,
         register,
-        uploadApi,
+        uploadApi: uploadApi as any,
         updateAvatar,
         handleSubmit: () => {
           createMessage.success('更新成功！');

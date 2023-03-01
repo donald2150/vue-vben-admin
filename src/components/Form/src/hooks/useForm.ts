@@ -18,7 +18,7 @@ export function useForm(props?: Props): UseFormReturnType {
     const form = unref(formRef);
     if (!form) {
       error(
-        'The form instance has not been obtained, please make sure that the form has been rendered when performing the form operation!'
+        'The form instance has not been obtained, please make sure that the form has been rendered when performing the form operation!',
       );
     }
     await nextTick();
@@ -44,7 +44,7 @@ export function useForm(props?: Props): UseFormReturnType {
       {
         immediate: true,
         deep: true,
-      }
+      },
     );
   }
 
@@ -79,8 +79,8 @@ export function useForm(props?: Props): UseFormReturnType {
       });
     },
 
-    removeSchemaByFiled: async (field: string | string[]) => {
-      unref(formRef)?.removeSchemaByFiled(field);
+    removeSchemaByField: async (field: string | string[]) => {
+      unref(formRef)?.removeSchemaByField(field);
     },
 
     // TODO promisify
@@ -94,9 +94,9 @@ export function useForm(props?: Props): UseFormReturnType {
     },
 
     appendSchemaByField: async (
-      schema: FormSchema,
+      schema: FormSchema | FormSchema[],
       prefixField: string | undefined,
-      first: boolean
+      first: boolean,
     ) => {
       const form = await getForm();
       form.appendSchemaByField(schema, prefixField, first);

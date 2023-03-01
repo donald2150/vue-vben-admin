@@ -9,6 +9,24 @@
         @submit="handleSubmit"
         @reset="handleReset"
       >
+        <template #selectA="{ model, field }">
+          <a-select
+            :options="optionsA"
+            mode="multiple"
+            v-model:value="model[field]"
+            @change="valueSelectA = model[field]"
+            allowClear
+          />
+        </template>
+        <template #selectB="{ model, field }">
+          <a-select
+            :options="optionsB"
+            mode="multiple"
+            v-model:value="model[field]"
+            @change="valueSelectB = model[field]"
+            allowClear
+          />
+        </template>
         <template #localSearch="{ model, field }">
           <ApiSelect
             :api="optionsListApi"
@@ -47,6 +65,27 @@
   import { optionsListApi } from '/@/api/demo/select';
   import { useDebounceFn } from '@vueuse/core';
   import { treeOptionsListApi } from '/@/api/demo/tree';
+  import { Select } from 'ant-design-vue';
+  import { cloneDeep } from 'lodash-es';
+  import { areaRecord } from '/@/api/demo/cascader';
+
+  const valueSelectA = ref<string[]>([]);
+  const valueSelectB = ref<string[]>([]);
+  const options = ref<Recordable[]>([]);
+  for (let i = 1; i < 10; i++) options.value.push({ label: '选项' + i, value: `${i}` });
+
+  const optionsA = computed(() => {
+    return cloneDeep(unref(options)).map((op) => {
+      op.disabled = unref(valueSelectB).indexOf(op.value) !== -1;
+      return op;
+    });
+  });
+  const optionsB = computed(() => {
+    return cloneDeep(unref(options)).map((op) => {
+      op.disabled = unref(valueSelectA).indexOf(op.value) !== -1;
+      return op;
+    });
+  });
 
   const provincesOptions = [
     {
@@ -100,6 +139,14 @@
   };
 
   const schemas: FormSchema[] = [
+    {
+      field: 'divider-basic',
+      component: 'Divider',
+      label: '基础字段',
+      colProps: {
+        span: 24,
+      },
+    },
     {
       field: 'field1',
       component: 'Input',
@@ -247,6 +294,9 @@
             value: '2',
           },
         ],
+        onChange: (e, v) => {
+          console.log('RadioButtonGroup====>:', e, v);
+        },
       },
     },
     {
@@ -294,6 +344,14 @@
       },
     },
     {
+      field: 'divider-api-select',
+      component: 'Divider',
+      label: '远程下拉演示',
+      colProps: {
+        span: 24,
+      },
+    },
+    {
       field: 'field30',
       component: 'ApiSelect',
       label: '懒加载远程下拉',
@@ -304,15 +362,16 @@
         params: {
           id: 1,
         },
+
         resultField: 'list',
         // use name as label
         labelField: 'name',
         // use id as value
         valueField: 'id',
         // not request untill to select
-        immediate: false,
-        onChange: (e) => {
-          console.log('selected:', e);
+        immediate: true,
+        onChange: (e, v) => {
+          console.log('ApiSelect====>:', e, v);
         },
         // atfer request callback
         onOptionsChange: (options) => {
@@ -323,6 +382,31 @@
         span: 8,
       },
       defaultValue: '0',
+    },
+    {
+      field: 'field8',
+      component: 'ApiCascader',
+      label: '联动ApiCascader',
+      required: true,
+      colProps: {
+        span: 8,
+      },
+      componentProps: {
+        api: areaRecord,
+        apiParamKey: 'parentCode',
+        dataField: 'data',
+        labelField: 'name',
+        valueField: 'code',
+        initFetchParams: {
+          parentCode: '',
+        },
+        isLeaf: (record) => {
+          return !(record.levelType < 3);
+        },
+        onChange: (e, ...v) => {
+          console.log('ApiCascader====>:', e, v);
+        },
+      },
     },
     {
       field: 'field31',
@@ -357,18 +441,88 @@
       componentProps: {
         api: treeOptionsListApi,
         resultField: 'list',
+        onChange: (e, v) => {
+          console.log('ApiTreeSelect====>:', e, v);
+        },
       },
       colProps: {
         span: 8,
       },
     },
     {
-      field: 'field20',
-      component: 'InputNumber',
-      label: '字段20',
+      field: 'field34',
+      component: 'ApiRadioGroup',
+      label: '远程Radio',
+      helpMessage: ['ApiRadioGroup组件', '使用接口提供的数据生成选项'],
       required: true,
+      componentProps: {
+        api: optionsListApi,
+        params: {
+          count: 2,
+        },
+        resultField: 'list',
+        // use name as label
+        labelField: 'name',
+        // use id as value
+        valueField: 'id',
+      },
+      defaultValue: '1',
       colProps: {
         span: 8,
+      },
+    },
+    {
+      field: 'field35',
+      component: 'ApiRadioGroup',
+      label: '远程Radio',
+      helpMessage: ['ApiRadioGroup组件', '使用接口提供的数据生成选项'],
+      required: true,
+      componentProps: {
+        api: optionsListApi,
+        params: {
+          count: 2,
+        },
+        resultField: 'list',
+        // use name as label
+        labelField: 'name',
+        // use id as value
+        valueField: 'id',
+        isBtn: true,
+        onChange: (e, v) => {
+          console.log('ApiRadioGroup====>:', e, v);
+        },
+      },
+      colProps: {
+        span: 8,
+      },
+    },
+    // {
+    //   field: 'field36',
+    //   component: 'ApiTree',
+    //   label: '远程Tree',
+    //   helpMessage: ['ApiTree组件', '使用接口提供的数据生成选项'],
+    //   required: true,
+    //   componentProps: {
+    //     api: treeOptionsListApi,
+    //     params: {
+    //       count: 2,
+    //     },
+    //     afterFetch: (v) => {
+    //       //do something
+    //       return v;
+    //     },
+    //     resultField: 'list',
+    //   },
+    //   colProps: {
+    //     span: 8,
+    //   },
+    // },
+    {
+      field: 'divider-linked',
+      component: 'Divider',
+      label: '字段联动',
+      colProps: {
+        span: 24,
       },
     },
     {
@@ -417,6 +571,71 @@
       },
     },
     {
+      field: 'divider-selects',
+      component: 'Divider',
+      label: '互斥多选',
+      helpMessage: ['两个Select共用数据源', '但不可选择对方已选中的项目'],
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: 'selectA',
+      component: 'Select',
+      label: '互斥SelectA',
+      slot: 'selectA',
+      defaultValue: [],
+      colProps: {
+        span: 8,
+      },
+    },
+    {
+      field: 'selectB',
+      component: 'Select',
+      label: '互斥SelectB',
+      slot: 'selectB',
+      defaultValue: [],
+      colProps: {
+        span: 8,
+      },
+    },
+    {
+      field: 'divider-deconstruct',
+      component: 'Divider',
+      label: '字段解构',
+      helpMessage: ['如果组件的值是 array 或者 object', '可以根据 ES6 的解构语法分别取值'],
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: '[startTime, endTime]',
+      label: '时间范围',
+      component: 'RangePicker',
+      componentProps: {
+        format: 'YYYY-MM-DD HH:mm:ss',
+        placeholder: ['开始时间', '结束时间'],
+        showTime: { format: 'HH:mm:ss' },
+      },
+    },
+    {
+      field: 'divider-others',
+      component: 'Divider',
+      label: '其它',
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: 'field20',
+      component: 'InputNumber',
+      label: '字段20',
+      required: true,
+      colProps: {
+        span: 8,
+      },
+    },
+    {
       field: 'field21',
       component: 'Slider',
       label: '字段21',
@@ -449,7 +668,7 @@
   ];
 
   export default defineComponent({
-    components: { BasicForm, CollapseContainer, PageWrapper, ApiSelect },
+    components: { BasicForm, CollapseContainer, PageWrapper, ApiSelect, ASelect: Select },
     setup() {
       const check = ref(null);
       const { createMessage } = useMessage();
@@ -464,12 +683,17 @@
       return {
         schemas,
         optionsListApi,
+        optionsA,
+        optionsB,
+        valueSelectA,
+        valueSelectB,
         onSearch: useDebounceFn(onSearch, 300),
         searchParams,
         handleReset: () => {
           keyword.value = '';
         },
         handleSubmit: (values: any) => {
+          console.log('values', values);
           createMessage.success('click search,values:' + JSON.stringify(values));
         },
         check,

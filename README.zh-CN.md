@@ -23,9 +23,9 @@ Vue Vben Admin 是一个免费开源的中后台模版。使用了最新的`vue3
 
 ## 预览
 
-- [vue-vben-admin](https://vvbin.cn/next/) - 完整版中文站点
+- [vue-vben-admin](https://vben.vvbin.cn/) - 完整版中文站点
 - [vue-vben-admin-gh-pages](https://anncwb.github.io/vue-vben-admin/) - 完整版 github 站点
-- [vben-admin-thin-next](https://vvbin.cn/thin/next/) - 简化版中文站点
+- [vben-admin-thin-next](https://vben.vvbin.cn/thin/next/) - 简化版中文站点
 - [vben-admin-thin-gh-pages](https://anncwb.github.io/vben-admin-thin-next/) - 简化版 github 站点
 
 测试账号: vben/123456
@@ -44,7 +44,7 @@ Vue Vben Admin 是一个免费开源的中后台模版。使用了最新的`vue3
 
 ## 文档
 
-[文档地址](https://vvbin.cn/doc-next/)
+[文档地址](https://doc.vvbin.cn/)
 
 ## 准备
 
@@ -70,20 +70,20 @@ git clone https://github.com/anncwb/vue-vben-admin.git
 ```bash
 cd vue-vben-admin
 
-yarn install
+pnpm install
 
 ```
 
 - 运行
 
 ```bash
-yarn serve
+pnpm serve
 ```
 
 - 打包
 
 ```bash
-yarn build
+pnpm build
 ```
 
 ## 更新日志
@@ -150,6 +150,7 @@ yarn build
 ## 后台整合示例
 
 - [lamp-cloud](https://github.com/zuihou/lamp-cloud) - 基于 SpringCloud Alibaba 的微服务中后台快速开发平台
+- [matecloud](https://github.com/matevip/matecloud) - MateCloud 微服务脚手架，基于 Spring Cloud 2020.0.3、SpringBoot 2.5.3 的全开源平台
 
 ## 维护者
 
